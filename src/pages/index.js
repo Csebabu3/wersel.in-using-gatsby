@@ -1,128 +1,184 @@
 import * as React from "react"
-import { Link } from "gatsby"
-import { StaticImage } from "gatsby-plugin-image"
+import Layout from "../components/Layout"
+import styled, { keyframes } from "styled-components"
+import "../styles/global.css"
+import { FaRegCirclePlay } from "react-icons/fa6"
+import Img from "gatsby-image"
+import { graphql, useStaticQuery } from "gatsby"
+import Categories from "../components/categories/Categories"
+import Homepage from "../components/HomePage/Homepage"
+import Cards from "../components/Cardbar/Cards"
+// import Card from "../components/Card/Card"
+//  import { Card } from "react-bootstrap"
+// import Cards from "../components/categories/Categories"
 
-import Layout from "../components/layout"
-import Seo from "../components/seo"
-import * as styles from "../components/index.module.css"
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`
 
-const links = [
-  {
-    text: "Tutorial",
-    url: "https://www.gatsbyjs.com/docs/tutorial",
-    description:
-      "A great place to get started if you're new to web development. Designed to guide you through setting up your first Gatsby site.",
-  },
-  {
-    text: "Examples",
-    url: "https://github.com/gatsbyjs/gatsby/tree/master/examples",
-    description:
-      "A collection of websites ranging from very basic to complex/complete that illustrate how to accomplish specific tasks within your Gatsby sites.",
-  },
-  {
-    text: "Plugin Library",
-    url: "https://www.gatsbyjs.com/plugins",
-    description:
-      "Learn how to add functionality and customize your Gatsby site or app with thousands of plugins built by our amazing developer community.",
-  },
-  {
-    text: "Build and Host",
-    url: "https://www.gatsbyjs.com/cloud",
-    description:
-      "Now you’re ready to show the world! Give your Gatsby site superpowers: Build and host on Gatsby Cloud. Get started for free!",
-  },
-]
+const slideInFromBottom = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(70px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`
 
-const samplePageLinks = [
-  {
-    text: "Page 2",
-    url: "page-2",
-    badge: false,
-    description:
-      "A simple example of linking to another page within a Gatsby site",
-  },
-  { text: "TypeScript", url: "using-typescript" },
-  { text: "Server Side Rendering", url: "using-ssr" },
-  { text: "Deferred Static Generation", url: "using-dsg" },
-]
+const slideInFromBottoms = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`
 
-const moreLinks = [
-  { text: "Join us on Discord", url: "https://gatsby.dev/discord" },
-  {
-    text: "Documentation",
-    url: "https://gatsbyjs.com/docs/",
-  },
-  {
-    text: "Starters",
-    url: "https://gatsbyjs.com/starters/",
-  },
-  {
-    text: "Showcase",
-    url: "https://gatsbyjs.com/showcase/",
-  },
-  {
-    text: "Contributing",
-    url: "https://www.gatsbyjs.com/contributing/",
-  },
-  { text: "Issues", url: "https://github.com/gatsbyjs/gatsby/issues" },
-]
+const slideInFromRight = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`
 
-const utmParameters = `?utm_source=starter&utm_medium=start-page&utm_campaign=default-starter`
+const Container = styled.div`
+  animation: ${fadeIn} 1s ease-out;
+`
 
-const IndexPage = () => (
-  <Layout>
-    <div className={styles.textCenter}>
-      <StaticImage
-        src="../images/example.png"
-        loading="eager"
-        width={64}
-        quality={95}
-        formats={["auto", "webp", "avif"]}
-        alt=""
-        style={{ marginBottom: `var(--space-3)` }}
-      />
-      <h1>
-        Welcome to <b>Gatsby!</b>
-      </h1>
-      <p className={styles.intro}>
-        <b>Example pages:</b>{" "}
-        {samplePageLinks.map((link, i) => (
-          <React.Fragment key={link.url}>
-            <Link to={link.url}>{link.text}</Link>
-            {i !== samplePageLinks.length - 1 && <> · </>}
-          </React.Fragment>
-        ))}
-        <br />
-        Edit <code>src/pages/index.js</code> to update this page.
-      </p>
-    </div>
-    <ul className={styles.list}>
-      {links.map(link => (
-        <li key={link.url} className={styles.listItem}>
-          <a
-            className={styles.listItemLink}
-            href={`${link.url}${utmParameters}`}
+const Button = styled.button`
+  animation: ${fadeIn} 1s ease-out;
+`
+
+const Heading1 = styled.h1`
+  animation: ${slideInFromBottom} 1s ease-out;
+`
+
+const Paragraph = styled.p`
+  animation: ${slideInFromBottoms} 1s ease-out;
+`
+
+const Row = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
+
+const Column = styled.div`
+  flex: 1;
+  min-width: 300px; /* Ensure columns don't get too narrow on smaller screens */
+`
+
+const ImageColumn = styled(Column)`
+  display: flex;
+  align-items: flex-end;
+`
+
+const AnimatedImage = styled(Img)`
+  animation: ${slideInFromRight} 1s ease-out;
+  max-width: 100%;
+  height: auto;
+`
+
+function IndexPage() {
+  const data = useStaticQuery(graphql`
+    query {
+      image: file(relativePath: { eq: "ai1.png" }) {
+        id
+        childImageSharp {
+          fixed(width: 460) {
+            ...GatsbyImageSharpFixed
+          }
+        }
+      }
+    }
+  `)
+
+  return (
+    <Layout>
+      <div className="container-fluid bg-dark d-flex justify-content-around align-items-center">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6">
+              <Column className="text-white" style={{ marginTop: "100px" }}>
+                <Paragraph>
+                  PRACTICAL PROJECT BASED AI LEARNING EXPERIENCE
+                </Paragraph>
+                <Heading1>Transform your</Heading1>
+                <Heading1>Future Career with</Heading1>
+                <Heading1>AI Skills</Heading1>
+                <Paragraph>
+                  Wersel Workdesk offers project-based AI courses that <br />
+                  empower you to innovate, earn certification, and build a<br />
+                  future-proof career.
+                </Paragraph>
+                <div className="d-flex">
+                  <Button className="btn">Register Now</Button>
+                  <FaRegCirclePlay
+                    style={{ fontSize: "70px", marginLeft: "40px" }}
+                  />
+                </div>
+              </Column>
+            </div>
+            <div className="col-md-6 image-container">
+              <AnimatedImage
+                fixed={data.image.childImageSharp.fixed}
+                alt="Wersel Logo"
+                className="bottom-image"
+                style={{ marginBottom: "100px" }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="container-fluid mt-5">
+        <div className="container">
+          <div
+            className="row d-flex justify-content-center"
+            style={{ textAlign: "left" }}
           >
-            {link.text} ↗
-          </a>
-          <p className={styles.listItemDescription}>{link.description}</p>
-        </li>
-      ))}
-    </ul>
-    {moreLinks.map((link, i) => (
-      <React.Fragment key={link.url}>
-        <a href={`${link.url}${utmParameters}`}>{link.text}</a>
-        {i !== moreLinks.length - 1 && <> · </>}
-      </React.Fragment>
-    ))}
-  </Layout>
-)
-
-/**
- * Head export to define metadata for the page
- *
- * See: https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-head/
- */
-export const Head = () => <Seo title="Home" />
+            <div className="col-md-6">
+              <h2 className="h2">Project Based Learning</h2>
+              <p>
+                Wersel Courses understand the importance of applying theoretical
+                <br />
+                knowledge to real-world scenarios. That’s why we incorporate
+                <br />
+                <b>Wersel Projects</b> – a cornerstone of our{" "}
+                <b>
+                  practical project-based<br></br> learning approach.
+                </b>
+              </p>
+              <img
+                src="https://wersel.in/wp-content/uploads/2024/04/group-of-young-female-and-male-college-students-on-2023-11-27-05-14-42-utc-scaled-1-1024x683.jpg"
+                alt="AI Image"
+                className="img-fluid"
+                style={{ width: "500px" }}
+              />
+            </div>
+            <div className="col-md-6">
+              <Categories />
+            </div>
+          </div>
+        </div>
+      </div>
+      <Homepage />
+      <Cards />
+    </Layout>
+  )
+}
 
 export default IndexPage
